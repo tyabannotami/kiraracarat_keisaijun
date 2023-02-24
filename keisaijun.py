@@ -124,7 +124,7 @@ while index < len(mid_list):
     for color in strongs[start:end]:
         if top_flag==0:
          #top.append(re.search('「.+',color.next).group())
-         top.append(re.search('「.+',color.next).group())
+         top.append(re.search('「.+',strongs[0].next).group())
          top_flag+=1
         center_colors.append(re.search('「.+',color.next).group())
         center_color_all.append(center_colors[-1])
