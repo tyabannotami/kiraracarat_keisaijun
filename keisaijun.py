@@ -12,6 +12,7 @@ import pandas as pd
 
 month_list=['年1月','年2月','年3月','年4月','年5月','年6月','年7月','年8月','年9月','年10月','年11月','年12月']
 #アドレス末尾のリスト
+#mid_list=['306','462','680']  例外回　　文中カラー表記、strongタグトップが表紙以外、strong位置例外
 #mid_list=['836', '840', '844']
 mid_list=['296', '301', '306', '311', '316', '321', '326', '331', '336', '342', '347', '352', '357', '361', '367', '372', '377', '382', '387', '392', '397', '402', '407', '412', '417', '422', '427', '432', '437', '442', '447', '452', '457', '462', '467', '472', '477', '482', '487', '492', '497', '502', '507', '512', '517', '522', '527', '532', '537', '542', '547', '552', '557', '562', '567', '572', '577', '582', '587', '592', '596', '600', '604', '608', '612', '616', '620', '624', '628', '632', '636', '640', '644', '648', '652', '656', '660', '664', '668', '672', '676', '680', '684', '688', '692', '696', '700', '704', '708', '712', '716', '720', '724', '728', '732', '736', '740', '744', '748', '752', '756', '760', '764', '768', '772', '776', '780', '784', '788', '792', '796', '800', '804', '808', '812', '816', '820', '824', '828', '832', '836', '840', '844']
 
@@ -103,30 +104,34 @@ while index < len(mid_list):
     keisai=[]
     center_colors=[]
     info=(source.find_all("div",class_="info"))[1]
+    #print(info)
+    #strongタグで抽出
     strongs=info.find_all("strong")
+    print(strongs)
 
-    #表紙と巻頭カラーが別かどうかで分ける
-    if re.search('表紙(&|＆)巻頭カラー',info.text):
-        print("both")
-        start=0
-        end=5
-    elif re.search('表紙(&|＆)センターカラー',info.text):
-        print("both")
-        start=0
-        end=5
-    else:
-        print("other")
-        start=1
-        end=6
+    color_text=[]
+    color_flag=0
+
+    #color_textにカラーの回のみ選択して格納
+    for i in info.stripped_strings:
+        if "◆◆" in i:
+                if "カラー" in i:
+                    color_flag=1
+                else:
+                    color_flag=0
+        if   color_flag==1:         
+            for j in strongs:
+                if i in j:
+                    color_text.append(i)
     
     top_flag=0
     #センターカラー、表紙の格納
-    for color in strongs[start:end]:
+    for color in color_text:
         if top_flag==0:
          #top.append(re.search('「.+',color.next).group())
          top.append(re.search('「.+',strongs[0].next).group())
          top_flag+=1
-        center_colors.append(re.search('「.+',color.next).group())
+        center_colors.append(re.search('「.+',color).group())
         center_color_all.append(center_colors[-1])
     print(center_colors)
     
